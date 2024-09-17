@@ -41,6 +41,7 @@ from packages.valory.skills.learning_abci.rounds import (
     SynchronizedData,
     TxPreparationRound,
 )
+import json
 
 
 HTTP_OK = 200
@@ -93,9 +94,18 @@ class APICheckBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ance
     def get_price(self):
         """Get token price from Coingecko"""
         # Interact with Coingecko's API
-        # result = yield from self.get_http_response("coingecko.com")
-        yield
-        price = 1.0
+        headers = {
+            "accept": "application/json",
+            "x-cg-pro-api-key": self.params.coingecko_api_key
+        }
+        result = yield from self.get_http_response(method="GET",url=self.params.coingecko_price_template,headers=headers)
+        self.context.logger.info(f"result Price is {result}")
+        if result.status_code == 200:
+            data = json.loads(result.body.decode('utf-8'))
+            price = data['autonolas']['usd']
+        else:
+            print("Failed to retrieve data, status code:", result.status_code)
+            price = 0
         self.context.logger.info(f"Price is {price}")
         return price
 
@@ -180,3 +190,5 @@ class LearningRoundBehaviour(AbstractRoundBehaviour):
         DecisionMakingBehaviour,
         TxPreparationBehaviour,
     ]
+
+

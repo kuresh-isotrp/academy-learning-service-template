@@ -41,10 +41,18 @@ from packages.valory.skills.learning_abci.rounds import (
     SynchronizedData,
     TxPreparationRound,
 )
+from packages.valory.contracts.gnosis_safe.contract import (
+    GnosisSafeContract,
+    SafeOperation,
+)
+from packages.valory.protocols.contract_api import ContractApiMessage
+from packages.valory.skills.transaction_settlement_abci.payload_tools import (hash_payload_to_hex,)
+
 import json
 
 
 HTTP_OK = 200
+ETHER_VALUE = 10**18
 GNOSIS_CHAIN_ID = "gnosis"
 TX_DATA = b"0x"
 SAFE_GAS = 0
@@ -143,7 +151,7 @@ class DecisionMakingBehaviour(
     def get_event(self):
         """Get the next event"""
         # Using the token price from the previous round, decide whether we should make a transfer or not
-        event = Event.DONE.value
+        event = Event.TRANSACT.value
         self.context.logger.info(f"Event is {event}")
         return event
 
@@ -161,8 +169,15 @@ class TxPreparationBehaviour(
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             tx_hash = yield from self.get_tx_hash()
+            payload_data = hash_payload_to_hex(
+                safe_tx_hash=tx_hash,
+                ether_value=ETHER_VALUE,  # we don't send any eth
+                safe_tx_gas=SAFE_GAS,
+                to_address=self.params.transfer_target_address,
+                data=TX_DATA,
+            )
             payload = TxPreparationPayload(
-                sender=sender, tx_submitter=None, tx_hash=tx_hash
+                sender=sender, tx_submitter=None, tx_hash=payload_data
             )
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
@@ -173,9 +188,29 @@ class TxPreparationBehaviour(
 
     def get_tx_hash(self):
         """Get the tx hash"""
-        # We need to prepare a 1 wei transfer from the safe to another (configurable) account.
-        yield
-        tx_hash = None
+        """Prepares and returns the safe tx hash for a multisend tx."""
+        response_msg = yield from self.get_contract_api_response(
+            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+            contract_address=self.synchronized_data.safe_contract_address,
+            contract_id=str(GnosisSafeContract.contract_id),
+            contract_callable="get_raw_safe_transaction_hash",
+            to_address=self.params.transfer_target_address,
+            value=0,
+            data=TX_DATA,
+            safe_tx_gas=SAFE_GAS,
+            chain_id= GNOSIS_CHAIN_ID,
+        )
+
+
+        if response_msg.performative != ContractApiMessage.Performative.STATE:
+            self.context.logger.error(
+                "Couldn't get safe tx hash. Expected response performative "  # type: ignore
+                f"{ContractApiMessage.Performative.STATE.value}, "  # type: ignore
+                f"received {response_msg.performative.value}: {response_msg}."
+            )
+            return False
+        self.context.logger.info(f"Response data is {response_msg}")
+        tx_hash = cast(str, response_msg.state.body["tx_hash"])[2:]
         self.context.logger.info(f"Transaction hash is {tx_hash}")
         return tx_hash
 

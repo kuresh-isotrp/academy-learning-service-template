@@ -187,6 +187,6 @@ models:
       coingecko_api_key: ${str:null}
       default_chain_id: ${str:gnosis}
       termination_from_block: ${int:34088325}
-      transfer_target_address: ${TRANSFER_TARGET_ADDRESS:str:0x0889BAEf5367e43FeC10bE1dCE15Da69c562b70E}
-      multi_send_contract_token_address: ${MULTI_SEND_CONTRACT_TOKEN_ADDRESS:str:0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761}
-      transfer_contract_token_address: ${TRANSFER_CONTRACT_TOKEN_ADDRESS:str:0xcE11e14225575945b8E6Dc0D4F2dD4C570f79d9f}
+      transfer_target_address: ${TRANSFER_TARGET_ADDRESS:str:0x0000000000000000000000000000000000000000}
+      multi_send_contract_token_address: ${MULTI_SEND_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
+      transfer_contract_token_address: ${TRANSFER_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}

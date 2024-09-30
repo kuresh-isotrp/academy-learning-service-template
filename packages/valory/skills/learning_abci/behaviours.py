@@ -41,6 +41,11 @@ from packages.valory.skills.learning_abci.rounds import (
     SynchronizedData,
     TxPreparationRound,
 )
+from packages.valory.protocols.contract_api import ContractApiMessage
+from packages.valory.contracts.erc20.contract import ERC20
+from packages.valory.contracts.gnosis_safe.contract import GnosisSafeContract
+from packages.valory.skills.transaction_settlement_abci.payload_tools import (hash_payload_to_hex,)
+
 import json
 
 
@@ -113,8 +118,22 @@ class APICheckBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ance
         """Get balance"""
         # Use the contract api to interact with the ERC20 contract
         # result = yield from self.get_contract_api_response()
-        yield
-        balance = 1.0
+        #yield
+        result = yield from self.get_contract_api_response(
+        performative=ContractApiMessage.Performative.GET_RAW_TRANSACTION,
+        contract_address=self.params.contract_address,
+        contract_id=str(ERC20.contract_id),
+        contract_callable="check_balance",
+        account=self.synchronized_data.safe_contract_address,
+        chain_id=GNOSIS_CHAIN_ID,)
+
+        if result.performative != ContractApiMessage.Performative.RAW_TRANSACTION:
+            self.context.logger.error(f"{result} : error in getting balance")
+            return False
+        walletBalance = (result.raw_transaction.body.get("wallet",None))
+        balance = (result.raw_transaction.body.get("token",None))
+
+        self.context.logger.info(f"Wallet Balance :{walletBalance}, Token Balance: {balance}")
         self.context.logger.info(f"Balance is {balance}")
         return balance
 
@@ -143,8 +162,13 @@ class DecisionMakingBehaviour(
     def get_event(self):
         """Get the next event"""
         # Using the token price from the previous round, decide whether we should make a transfer or not
-        event = Event.DONE.value
+        #event = Event.DONE.value
         self.context.logger.info(f"Event is {event}")
+        if self.synchronized_data.price > 0.5:
+            event = Event.DONE.value
+        else:
+            event = Event.TRANSACT.value
+            self.context.logger.info(f"Event is {event}.. Make a transfer")
         return event
 
 

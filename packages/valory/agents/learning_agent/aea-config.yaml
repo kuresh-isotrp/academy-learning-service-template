@@ -31,8 +31,8 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihu2bcgjk2tqjiq2zhk3uogtfszqn4osvdt7ho3fubdpdj4jgdfjm
 - valory/abstract_round_abci:0.1.0:bafybeibovsktd3uxur45nrcomq5shcn46cgxd5idmhxbmjhg32c5abyqim
-- valory/learning_abci:0.1.0:bafybeigntqqoa64o2tcncpzvncnbt7x4e6gxwma3qotpbvq7pujzgq4ht4
-- valory/learning_chained_abci:0.1.0:bafybeibajm3umwrf6dthzr4fi5rq5k7g5r2m2oaueqa7n2eqh67jwa3rni
+- valory/learning_abci:0.1.0:bafybeibf26b5vznsli2lspqdcxjm3aqf2g6bg7garpevve3hyy2kuivpea
+- valory/learning_chained_abci:0.1.0:bafybeihsrr3zggw3c4xopzmu263yo4lv7k45nqnxnr33e4oumf4g7qfq4i
 - valory/registration_abci:0.1.0:bafybeicnth5q4httefsusywx3zrrq4al47owvge72dqf2fziruicq6hqta
 - valory/reset_pause_abci:0.1.0:bafybeievjciqdvxhqxfjd4whqs27h6qbxqzrae7wwj7fpvxlvmtw3x35im
 - valory/termination_abci:0.1.0:bafybeid54buqxipiuduw7b6nnliiwsxajnltseuroad53wukfonpxca2om
@@ -188,3 +188,4 @@ models:
       default_chain_id: ${str:gnosis}
       termination_from_block: ${int:34088325}
       transfer_target_address: ${str:0x615d3278680337e2D39C3bc5042D959C7938B917}
+      contract_address: ${str:0x0000000000000000000000000000000000000000}

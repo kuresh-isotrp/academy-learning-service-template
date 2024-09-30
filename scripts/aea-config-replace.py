@@ -55,7 +55,7 @@ def main() -> None:
             config[-1]["models"]["params"]["args"]["setup"][
                 "safe_contract_address"
             ] = f"${{str:{os.getenv('SAFE_CONTRACT_ADDRESS')}}}"  # type: ignore
-
+        
     with open(Path("learning_agent", "aea-config.yaml"), "w", encoding="utf-8") as file:
         yaml.dump_all(config, file, sort_keys=False)
 

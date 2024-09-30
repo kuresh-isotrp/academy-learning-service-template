@@ -38,6 +38,7 @@ from packages.valory.skills.learning_abci.payloads import (
     APICheckPayload,
     DecisionMakingPayload,
     TxPreparationPayload,
+    MultiTxPreparationPayload,
 )
 
 
@@ -49,6 +50,8 @@ class Event(Enum):
     TRANSACT = "transact"
     NO_MAJORITY = "no_majority"
     ROUND_TIMEOUT = "round_timeout"
+    MULTI_TRANSACT = "multi_transact"
+
 
 
 class SynchronizedData(BaseSynchronizedData):
@@ -87,6 +90,11 @@ class SynchronizedData(BaseSynchronizedData):
     def participant_to_tx_round(self) -> DeserializedCollection:
         """Get the participants to the tx round."""
         return self._get_deserialized("participant_to_tx_round")
+    
+    # @property
+    # def participant_to_multi_tx_round(self) -> DeserializedCollection:
+    #     """Get the participants to the multi tx round."""
+    #     return self._get_deserialized("participant_to_multi_tx_round")
 
     @property
     def tx_submitter(self) -> str:
@@ -148,6 +156,21 @@ class TxPreparationRound(CollectSameUntilThresholdRound):
 
     # Event.ROUND_TIMEOUT  # this needs to be referenced for static checkers
 
+class MultiTxPreparationRound(CollectSameUntilThresholdRound):
+    """MultiTxPreparationRound"""
+
+    payload_class = MultiTxPreparationPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_tx_round)
+    selection_key = (
+        get_name(SynchronizedData.tx_submitter),
+        get_name(SynchronizedData.most_voted_tx_hash),
+    )
+
+    # Event.ROUND_TIMEOUT  # this needs to be referenced for static checkers
+
 
 class FinishedDecisionMakingRound(DegenerateRound):
     """FinishedDecisionMakingRound"""
@@ -155,6 +178,9 @@ class FinishedDecisionMakingRound(DegenerateRound):
 
 class FinishedTxPreparationRound(DegenerateRound):
     """FinishedLearningRound"""
+
+class FinishedMultiTxPreparationRound(DegenerateRound):
+    """FinishedMultiTranscationRound"""
 
 
 class LearningAbciApp(AbciApp[Event]):
@@ -176,18 +202,26 @@ class LearningAbciApp(AbciApp[Event]):
             Event.DONE: FinishedDecisionMakingRound,
             Event.ERROR: FinishedDecisionMakingRound,
             Event.TRANSACT: TxPreparationRound,
+            Event.MULTI_TRANSACT: MultiTxPreparationRound,
         },
         TxPreparationRound: {
             Event.NO_MAJORITY: TxPreparationRound,
             Event.ROUND_TIMEOUT: TxPreparationRound,
             Event.DONE: FinishedTxPreparationRound,
         },
+        MultiTxPreparationRound: {
+            Event.NO_MAJORITY: MultiTxPreparationRound,
+            Event.ROUND_TIMEOUT: MultiTxPreparationRound,
+            Event.DONE: FinishedMultiTxPreparationRound,
+        },
         FinishedDecisionMakingRound: {},
         FinishedTxPreparationRound: {},
+        FinishedMultiTxPreparationRound:{},
     }
     final_states: Set[AppState] = {
         FinishedDecisionMakingRound,
         FinishedTxPreparationRound,
+        FinishedMultiTxPreparationRound,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
@@ -197,4 +231,5 @@ class LearningAbciApp(AbciApp[Event]):
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedDecisionMakingRound: set(),
         FinishedTxPreparationRound: {get_name(SynchronizedData.most_voted_tx_hash)},
+        FinishedMultiTxPreparationRound: {get_name(SynchronizedData.most_voted_tx_hash)},
     }

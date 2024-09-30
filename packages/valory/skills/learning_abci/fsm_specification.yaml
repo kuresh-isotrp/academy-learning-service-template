@@ -4,10 +4,12 @@ alphabet_in:
 - NO_MAJORITY
 - ROUND_TIMEOUT
 - TRANSACT
+- MULTI_TRANSACT
 default_start_state: APICheckRound
 final_states:
 - FinishedDecisionMakingRound
 - FinishedTxPreparationRound
+- FinishedMultiTxPreparationRound
 label: LearningAbciApp
 start_states:
 - APICheckRound
@@ -17,6 +19,8 @@ states:
 - FinishedDecisionMakingRound
 - FinishedTxPreparationRound
 - TxPreparationRound
+- FinishedMultiTxPreparationRound
+- MultiTxPreparationRound
 transition_func:
     (APICheckRound, DONE): DecisionMakingRound
     (APICheckRound, NO_MAJORITY): APICheckRound
@@ -26,6 +30,10 @@ transition_func:
     (DecisionMakingRound, NO_MAJORITY): DecisionMakingRound
     (DecisionMakingRound, ROUND_TIMEOUT): DecisionMakingRound
     (DecisionMakingRound, TRANSACT): TxPreparationRound
+    (DecisionMakingRound, MULTI_TRANSACT): MultiTxPreparationRound
     (TxPreparationRound, DONE): FinishedTxPreparationRound
     (TxPreparationRound, NO_MAJORITY): TxPreparationRound
     (TxPreparationRound, ROUND_TIMEOUT): TxPreparationRound
+    (MultiTxPreparationRound, DONE): FinishedMultiTxPreparationRound
+    (MultiTxPreparationRound, NO_MAJORITY): MultiTxPreparationRound
+    (MultiTxPreparationRound, ROUND_TIMEOUT): MultiTxPreparationRound

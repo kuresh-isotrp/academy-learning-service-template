@@ -7,7 +7,7 @@ license: Apache-2.0
 fingerprint:
   README.md: bafybeid42pdrf6qrohedylj4ijrss236ai6geqgf3he44huowiuf7pl464
 fingerprint_ignore_patterns: []
-agent: valory/learning_agent:0.1.0:bafybeiayrb2axwzpcbpcoitdc2v4qfvcrseflabolyzt6n6ymefa7l5idy
+agent: valory/learning_agent:0.1.0:bafybeid3vsjtejmo6f3pmhxdxpts5v6dtbcfct4gdnpuovcv5igwu23ceu
 number_of_agents: 4
 deployment:
   agent:
@@ -95,6 +95,8 @@ extra:
         transfer_target_address: ${TRANSFER_TARGET_ADDRESS:str:0x0000000000000000000000000000000000000000}
         multi_send_contract_token_address: ${MULTI_SEND_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
         transfer_contract_token_address: ${TRANSFER_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
+        subgraph_url: ${SUBGRAPH_URL:str:https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU}
+        ipfs_base_end_point: ${IPFS_BASE_END_POINT:str:https://gateway.autonolas.tech/ipfs/}
 1:
   models:
     benchmark_tool:
@@ -143,6 +145,8 @@ extra:
         transfer_target_address: ${TRANSFER_TARGET_ADDRESS:str:0x0000000000000000000000000000000000000000}
         multi_send_contract_token_address: ${MULTI_SEND_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
         transfer_contract_token_address: ${TRANSFER_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
+        subgraph_url: ${SUBGRAPH_URL:str:https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU}
+        ipfs_base_end_point: ${IPFS_BASE_END_POINT:str:https://gateway.autonolas.tech/ipfs/}
 2:
   models:
     benchmark_tool:
@@ -191,6 +195,8 @@ extra:
         transfer_target_address: ${TRANSFER_TARGET_ADDRESS:str:0x0000000000000000000000000000000000000000}
         multi_send_contract_token_address: ${MULTI_SEND_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
         transfer_contract_token_address: ${TRANSFER_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
+        subgraph_url: ${SUBGRAPH_URL:str:https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU}
+        ipfs_base_end_point: ${IPFS_BASE_END_POINT:str:https://gateway.autonolas.tech/ipfs/}
 3:
   models:
     benchmark_tool:
@@ -239,6 +245,8 @@ extra:
         transfer_target_address: ${TRANSFER_TARGET_ADDRESS:str:0x0000000000000000000000000000000000000000}
         multi_send_contract_token_address: ${MULTI_SEND_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
         transfer_contract_token_address: ${TRANSFER_CONTRACT_TOKEN_ADDRESS:str:0x0000000000000000000000000000000000000000}
+        subgraph_url: ${SUBGRAPH_URL:str:https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU}
+        ipfs_base_end_point: ${IPFS_BASE_END_POINT:str:https://gateway.autonolas.tech/ipfs/}
 ---
 public_id: valory/ledger:0.19.0
 type: connection

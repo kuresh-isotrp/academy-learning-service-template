@@ -15,6 +15,8 @@ start_states:
 - APICheckRound
 states:
 - APICheckRound
+- FetchAndStoreToIPFSRound
+- RetriveFromIPFSRound
 - DecisionMakingRound
 - FinishedDecisionMakingRound
 - FinishedTxPreparationRound
@@ -22,9 +24,15 @@ states:
 - FinishedMultiTxPreparationRound
 - MultiTxPreparationRound
 transition_func:
-    (APICheckRound, DONE): DecisionMakingRound
+    (APICheckRound, DONE): FetchAndStoreToIPFSRound
     (APICheckRound, NO_MAJORITY): APICheckRound
     (APICheckRound, ROUND_TIMEOUT): APICheckRound
+    (FetchAndStoreToIPFSRound, DONE): RetriveFromIPFSRound
+    (FetchAndStoreToIPFSRound, NO_MAJORITY): FetchAndStoreToIPFSRound
+    (FetchAndStoreToIPFSRound, ROUND_TIMEOUT): FetchAndStoreToIPFSRound
+    (RetriveFromIPFSRound, DONE): DecisionMakingRound
+    (RetriveFromIPFSRound, NO_MAJORITY): RetriveFromIPFSRound
+    (RetriveFromIPFSRound, ROUND_TIMEOUT): RetriveFromIPFSRound
     (DecisionMakingRound, DONE): FinishedDecisionMakingRound
     (DecisionMakingRound, ERROR): FinishedDecisionMakingRound
     (DecisionMakingRound, NO_MAJORITY): DecisionMakingRound

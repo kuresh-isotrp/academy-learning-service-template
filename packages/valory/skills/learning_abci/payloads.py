@@ -39,6 +39,14 @@ class DecisionMakingPayload(BaseTxPayload):
 
     event: str
 
+@dataclass(frozen=True)
+class FetchAndStoreToIPFSPayload(BaseTxPayload):
+    """Represent a transaction payload for the IPFS Fetch & Store Payload."""
+    metadata_hash: Optional[str] = None
+
+@dataclass(frozen=True)
+class RetriveFromIPFSPayload(BaseTxPayload):
+    """Represent a transaction payload for Retrive Data From IPFS Payload."""
 
 @dataclass(frozen=True)
 class TxPreparationPayload(BaseTxPayload):

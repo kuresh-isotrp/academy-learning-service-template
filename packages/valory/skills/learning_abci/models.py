@@ -60,4 +60,10 @@ class Params(BaseParams):
         self.multi_send_contract_token_address = self._ensure(
             "multi_send_contract_token_address", kwargs, str
         )
+        self.subgraph_url = self._ensure(
+            "subgraph_url", kwargs, str
+        )
+        self.ipfs_base_end_point = self._ensure(
+            "ipfs_base_end_point", kwargs, str
+        )
         super().__init__(*args, **kwargs)

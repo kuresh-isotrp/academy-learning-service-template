@@ -36,6 +36,8 @@ from packages.valory.skills.abstract_round_abci.base import (
 )
 from packages.valory.skills.learning_abci.payloads import (
     APICheckPayload,
+    FetchAndStoreToIPFSPayload,
+    RetriveFromIPFSPayload,
     DecisionMakingPayload,
     TxPreparationPayload,
     MultiTxPreparationPayload,
@@ -75,11 +77,21 @@ class SynchronizedData(BaseSynchronizedData):
     def balance(self) -> Optional[float]:
         """Get the token balance."""
         return self.db.get("balance", None)
+    
+    @property
+    def metadata_hash(self) -> str:
+        """meta Data hashing."""
+        return str(self.db.get_strict("metadata_hash"))
 
     @property
     def participant_to_price_round(self) -> DeserializedCollection:
         """Get the participants to the price round."""
         return self._get_deserialized("participant_to_price_round")
+    
+    @property
+    def participant_to_ipfs_round(self) -> DeserializedCollection:
+        """Get the participants to the ipfs rounds."""
+        return self._get_deserialized("participant_to_ipfs_round")
 
     @property
     def most_voted_tx_hash(self) -> Optional[float]:
@@ -91,11 +103,6 @@ class SynchronizedData(BaseSynchronizedData):
         """Get the participants to the tx round."""
         return self._get_deserialized("participant_to_tx_round")
     
-    # @property
-    # def participant_to_multi_tx_round(self) -> DeserializedCollection:
-    #     """Get the participants to the multi tx round."""
-    #     return self._get_deserialized("participant_to_multi_tx_round")
-
     @property
     def tx_submitter(self) -> str:
         """Get the round that submitted a tx to transaction_settlement_abci."""
@@ -115,6 +122,27 @@ class APICheckRound(CollectSameUntilThresholdRound):
         get_name(SynchronizedData.balance),
     )
 
+    # Event.ROUND_TIMEOUT  # this needs to be referenced for static checkers
+
+class FetchAndStoreToIPFSRound(CollectSameUntilThresholdRound):
+    """Fetch And Store To IPFS Round"""
+    payload_class = FetchAndStoreToIPFSPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_ipfs_round)
+    selection_key = (
+        get_name(SynchronizedData.metadata_hash),
+    )
+
+class RetriveFromIPFSRound(CollectSameUntilThresholdRound):
+    """Retrive From IPFS Round"""
+    payload_class = RetriveFromIPFSPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    none_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_ipfs_round)
     # Event.ROUND_TIMEOUT  # this needs to be referenced for static checkers
 
 
@@ -194,6 +222,16 @@ class LearningAbciApp(AbciApp[Event]):
         APICheckRound: {
             Event.NO_MAJORITY: APICheckRound,
             Event.ROUND_TIMEOUT: APICheckRound,
+            Event.DONE: FetchAndStoreToIPFSRound,
+        },
+        FetchAndStoreToIPFSRound: {
+            Event.NO_MAJORITY: FetchAndStoreToIPFSRound,
+            Event.ROUND_TIMEOUT: FetchAndStoreToIPFSRound,
+            Event.DONE: RetriveFromIPFSRound,
+        },
+        RetriveFromIPFSRound: {
+            Event.NO_MAJORITY: RetriveFromIPFSRound,
+            Event.ROUND_TIMEOUT: RetriveFromIPFSRound,
             Event.DONE: DecisionMakingRound,
         },
         DecisionMakingRound: {

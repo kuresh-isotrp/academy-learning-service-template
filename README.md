@@ -27,7 +27,7 @@ A service which perform the below operations on each state
 1. Clone this repo:
 
     ```
-    git clone git@github.com:valory-xyz/academy-learning-service-template.git
+    git clone git@github.com:kuresh-isotrp/academy-learning-service-template.git
     ```
 
 2. Create the virtual environment:

@@ -1,7 +1,12 @@
-## Learning Service
+## Learning Demo Service
 
-A service to learn about [Olas](https://olas.network/) agents and [Open Autonomy](https://github.com/valory-xyz/open-autonomy).
-
+A service which perform the below operations on each state
+- API Check to get the Balance of Wallet
+- Fetch and store the subgraph data into IPFS, In this service we are using Omen xDai subgraph for fetch data(https://gateway.thegraph.com/api/{api_key}/subgraphs/id/9fUVQpFwzpdWS9bq5WkAnmKbNNcoBwatMR4yZq81pbbz)
+- Retrive the IPFS for data validation
+- Decession making for Single Tx preparation / Multi Tx preparation Based on Balance
+- If Balance is more then the threashhold defined then preparaing Multi Tx for Native and a token
+- Genearate hash for the same and submit for Transcation
 
 ## System requirements
 
@@ -22,7 +27,7 @@ A service to learn about [Olas](https://olas.network/) agents and [Open Autonomy
 1. Clone this repo:
 
     ```
-    git clone git@github.com:valory-xyz/academy-learning-service-template.git
+    git clone git@github.com:kuresh-isotrp/academy-learning-service-template.git
     ```
 
 2. Create the virtual environment:
@@ -61,7 +66,11 @@ A service to learn about [Olas](https://olas.network/) agents and [Open Autonomy
     cp sample.env .env
     ```
 
-7. Fill in the required environment variables in .env. These variables are: `ALL_PARTICIPANTS`, `GNOSIS_LEDGER_RPC`, `COINGECKO_API_KEY` and `SAFE_CONTRACT_ADDRESS`. You will need to get a [Coingecko](https://www.coingecko.com/). Set `GNOSIS_LEDGER_RPC` to your Tenderly fork Admin RPC.
+7. Fill in the required environment variables in .env. These variables are: `ALL_PARTICIPANTS`, `GNOSIS_LEDGER_RPC`, `COINGECKO_API_KEY` , `SAFE_CONTRACT_ADDRESS`. You will need to get a [Coingecko](https://www.coingecko.com/). Set `GNOSIS_LEDGER_RPC` to your Tenderly fork Admin RPC.
+    - set TRANSFER_TARGET_ADDRESS as the target address where you want to do the transfer
+    - set SUBGRAPH_URL to read the data and pused to IPFS.In this service we have used Omen xDai subgraph for fetch data https://gateway.thegraph.com/api/{api_key}/subgraphs/id/9fUVQpFwzpdWS9bq5WkAnmKbNNcoBwatMR4yZq81pbbz
+    - set MULTI_SEND_CONTRACT_TOKEN_ADDRESS as the token for multisend on gnosis chain
+    - set TRANSFER_CONTRACT_TOKEN_ADDRESS as the token for ERC-20 on gnosis chain
 
 ### Run a single agent
 

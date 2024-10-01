@@ -63,7 +63,9 @@ class Params(BaseParams):
         self.subgraph_url = self._ensure(
             "subgraph_url", kwargs, str
         )
-        self.ipfs_base_end_point = self._ensure(
-            "ipfs_base_end_point", kwargs, str
+        
+        self.ipfs_address = self._ensure(
+            "ipfs_address", kwargs, str
         )
+        
         super().__init__(*args, **kwargs)

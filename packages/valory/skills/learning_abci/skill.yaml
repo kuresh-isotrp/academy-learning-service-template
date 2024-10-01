@@ -7,11 +7,11 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeiho3lkochqpmes4f235chq26oggmwnol3vjuvhosleoubbjirbwaq
-  behaviours.py: bafybeiaeg2pahjut5i6jbww24xl4ytgqsvrpqpq66ung3mtfaa7cgdkucy
+  behaviours.py: bafybeidecsb5tygtlq7avyyicqteklzov7yynlfka3kozl3awfz6qtraka
   dialogues.py: bafybeifqjbumctlffx2xvpga2kcenezhe47qhksvgmaylyp5ypwqgfar5u
   fsm_specification.yaml: bafybeib6k6hgdwsj6uhnm25xdutmqaj2oxe4f7kixfiheb76cyeryncbfi
   handlers.py: bafybeigjadr4thz6hfpfx5abezbwnqhbxmachf4efasrn4z2vqhsqgnyvi
-  models.py: bafybeifa54256lffgjk5d7zplopkblf6tmwq5qdcmngubh5nradi3mw5sy
+  models.py: bafybeic6z3vp4bzcbznratzoogt5v24uwqh6hqwjwqq27z5o4gkkurm3d4
   payloads.py: bafybeibepjtilbtjp6n6ipphqrelmnhz6pkuxeenm3jfvov2nl2m3mymri
   rounds.py: bafybeicrygkwacm632hkuw5ynnryjnxrfiuidl46xbp3dvdfr2il7fvxyy
 fingerprint_ignore_patterns: []
@@ -131,7 +131,7 @@ models:
       multi_send_contract_token_address: '0x0000000000000000000000000000000000000000'
       transfer_contract_token_address: '0x0000000000000000000000000000000000000000'
       subgraph_url: https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU
-      ipfs_base_end_point: https://gateway.autonolas.tech/ipfs/
+      ipfs_address: https://gateway.autonolas.tech/ipfs/
     class_name: Params
   requests:
     args: {}

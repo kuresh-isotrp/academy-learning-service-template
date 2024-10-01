@@ -220,7 +220,7 @@ class FetchAndStoreToIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=to
         v1_file_bytes = cast(bytes, multibase.decode(v1_file_hash))
         multihash_bytes = multicodec.remove_prefix(v1_file_bytes)
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        ipfs_link = self.params.ipfs_base_end_point + v1_file_hash_hex
+        ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"ipfs link for data: {ipfs_link}")
         return metadata_hash
     

@@ -82,6 +82,7 @@ VALUE_KEY = "value"
 TO_ADDRESS_KEY = "to_address"
 METADATA_FILENAME = "meatadata.json"
 V1_HEX_PREFIX = "f01"
+T_BALANCE = 100
 
 
 class LearningBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
@@ -163,7 +164,7 @@ class APICheckBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ance
             response_msg.raw_transaction.body.get("wallet", None)
         ) / 10**18
         # fetching token balance, token decimal is 8
-        balance = (response_msg.raw_transaction.body.get("token", None)) / 10**8
+        balance = (response_msg.raw_transaction.body.get("token", None)) / 10**18
 
         self.context.logger.info(
             f"Wallet Balance is {wallet_balance}, token balance is {balance}"
@@ -305,7 +306,7 @@ class DecisionMakingBehaviour(
             event = Event.TRANSACT.value
             self.context.logger.info(f"Threshold not reached, moving to {event}")
 
-        elif self.synchronized_data.balance > 0 and self.synchronized_data.balance < 100:
+        elif self.synchronized_data.balance > 0 and self.synchronized_data.balance < T_BALANCE:
             event = Event.TRANSACT.value
             self.context.logger.info(f"Threshold not reached, moving to {event}")
         else:

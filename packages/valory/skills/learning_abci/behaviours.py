@@ -83,6 +83,7 @@ TO_ADDRESS_KEY = "to_address"
 METADATA_FILENAME = "meatadata.json"
 V1_HEX_PREFIX = "f01"
 T_BALANCE = 100
+TX_VALUE = 10
 
 
 class LearningBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
@@ -162,9 +163,9 @@ class APICheckBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ance
         # fetching wallet balance, token decimal is 18
         wallet_balance = (
             response_msg.raw_transaction.body.get("wallet", None)
-        ) / 10**18
+        ) / ETHER_VALUE
         # fetching token balance, token decimal is 8
-        balance = (response_msg.raw_transaction.body.get("token", None)) / 10**18
+        balance = (response_msg.raw_transaction.body.get("token", None)) / ETHER_VALUE
 
         self.context.logger.info(
             f"Wallet Balance is {wallet_balance}, token balance is {balance}"
@@ -435,7 +436,7 @@ class MultiTxPreparationBehaviour(
             contract_id=str(GnosisSafeContract.contract_id),
             contract_callable="get_raw_safe_transaction_hash",
             to_address=self.params.transfer_target_address,
-            value=ETHER_VALUE,
+            value=TX_VALUE,
             data=TX_DATA,
             safe_tx_gas=SAFE_GAS,
             chain_id=GNOSIS_CHAIN_ID,
@@ -452,7 +453,7 @@ class MultiTxPreparationBehaviour(
         return {
             "operation": MultiSendOperation.CALL,
             "to":self.params.transfer_target_address,
-            "value": 10,
+            "value": TX_VALUE,
             "data": tx_hash_data,
         }
 
@@ -466,7 +467,7 @@ class MultiTxPreparationBehaviour(
             contract_id=str(ERC20.contract_id),
             contract_callable="build_transfer_tx",
             receiver=self.params.transfer_target_address, 
-            amount=10**8,
+            amount=TX_VALUE,
         )
 
         if response_msg.performative != ContractApiMessage.Performative.RAW_TRANSACTION:
@@ -483,7 +484,7 @@ class MultiTxPreparationBehaviour(
         return {
             "operation": MultiSendOperation.CALL,
             "to": self.params.transfer_contract_token_address,
-            "value": 10,
+            "value": TX_VALUE,
             "data": tx_hash_data,
             "chain_id":GNOSIS_CHAIN_ID
         }

@@ -67,10 +67,10 @@ A service which perform the below operations on each state
     ```
 
 7. Fill in the required environment variables in .env. These variables are: `ALL_PARTICIPANTS`, `GNOSIS_LEDGER_RPC`, `COINGECKO_API_KEY` , `SAFE_CONTRACT_ADDRESS`. You will need to get a [Coingecko](https://www.coingecko.com/). Set `GNOSIS_LEDGER_RPC` to your Tenderly fork Admin RPC.
-     set TRANSFER_TARGET_ADDRESS as the target address where you want to do the transfer
-     set SUBGRAPH_URL to read the data and pused to IPFS.In this service we have used Connext Gnosis (https://thegraph.com/explorer/subgraphs/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU?                view=Query&chain=arbitrum-one).IN this create subgraph api key to access the subgraph data.
-    set MULTI_SEND_CONTRACT_TOKEN_ADDRESS as the token for multisend on gnosis chain
-    set TRANSFER_CONTRACT_TOKEN_ADDRESS as the token for ERC-20 on gnosis chain
+    - set TRANSFER_TARGET_ADDRESS as the target address where you want to do the transfer
+    - set SUBGRAPH_URL to read the data and pused to IPFS.In this service we have used Omen xDai subgraph for fetch data https://gateway.thegraph.com/api/{api_key}/subgraphs/id/9fUVQpFwzpdWS9bq5WkAnmKbNNcoBwatMR4yZq81pbbz
+    - set MULTI_SEND_CONTRACT_TOKEN_ADDRESS as the token for multisend on gnosis chain
+    - set TRANSFER_CONTRACT_TOKEN_ADDRESS as the token for ERC-20 on gnosis chain
 
 ### Run a single agent
 

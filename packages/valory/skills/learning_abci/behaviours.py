@@ -193,9 +193,9 @@ class FetchAndStoreToIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=to
         @dataclass
         class MetadataItems:
             id: str
-            key: str
-            decimal: str
-            adoptedDecimal: str
+            templateId: str
+            data: str
+            title: str
         
         @dataclass
         class MetaData:
@@ -235,7 +235,7 @@ class FetchAndStoreToIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=to
             a response dictionary.
         """
         self.context.logger.info(f"inside query_subgraph")
-        json_content = {"query": "{ assets(first: 100) { id key decimal adoptedDecimal } }", "operationName": "Subgraphs", "variables": {}}
+        json_content = {"query": "{ questions(first: 105) { id templateId data title } }", "operationName": "Subgraphs", "variables": {}}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -252,7 +252,6 @@ class FetchAndStoreToIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=to
         if "errors" in body.keys():
             raise ValueError(f"The given query is not correct")
         return body
-    
 class RetriveFromIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ancestors
     """IPFS Get Behaviour"""
     matching_round: Type[AbstractRound] = RetriveFromIPFSRound

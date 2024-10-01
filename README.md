@@ -2,8 +2,8 @@
 
 A service which perform the below operations on each state
 - API Check to get the Balance of Wallet
-- Fetch and store the subgraph data into IPFS
-- Retrive the IPFS for validation
+- Fetch and store the subgraph data into IPFS, In this service we are using Omen xDai subgraph for fetch data(https://gateway.thegraph.com/api/{api_key}/subgraphs/id/9fUVQpFwzpdWS9bq5WkAnmKbNNcoBwatMR4yZq81pbbz)
+- Retrive the IPFS for data validation
 - Decession making for Single Tx preparation / Multi Tx preparation Based on Balance
 - If Balance is more then the threashhold defined then preparaing Multi Tx for Native and a token
 - Genearate hash for the same and submit for Transcation

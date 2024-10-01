@@ -1,15 +1,12 @@
 ## Learning Demo Service
 
 A service which perform the below operations on each state
-    API Check to get the Balance of Wallet
-    Fetch and store the subgraph data into IPFS
-    Retrive the IPFS for validation
-    Decession making for Single Tx preparation / Multi Tx preparation Based on Balance
-    If Balance is more then the threashhold defined then preparaing Multi Tx for Native and a token
-    Genearate hash for the same and submit for Transcation
-    
-    
-
+- API Check to get the Balance of Wallet
+- Fetch and store the subgraph data into IPFS
+- Retrive the IPFS for validation
+- Decession making for Single Tx preparation / Multi Tx preparation Based on Balance
+- If Balance is more then the threashhold defined then preparaing Multi Tx for Native and a token
+- Genearate hash for the same and submit for Transcation
 
 ## System requirements
 

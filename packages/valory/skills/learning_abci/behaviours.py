@@ -63,6 +63,7 @@ from packages.valory.skills.transaction_settlement_abci.payload_tools import (
     hash_payload_to_hex,
 )
 import requests
+import json
 from tempfile import mkdtemp
 import multibase
 import multicodec
@@ -233,24 +234,23 @@ class FetchAndStoreToIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=to
         Returns:
             a response dictionary.
         """
-        content = {"query": "{ assets(first: 100) { id key decimal adoptedDecimal } }", "operationName": "Subgraphs", "variables": {}}
+        self.context.logger.info(f"inside query_subgraph")
+        json_content = {"query": "{ assets(first: 100) { id key decimal adoptedDecimal } }", "operationName": "Subgraphs", "variables": {}}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
         url=self.params.subgraph_url
-        res = requests.post(url, json=content, headers=headers)
+        res = requests.post(url, json=json_content, headers=headers)
         if res.status_code != 200:
             raise ConnectionError(
-                "Something went wrong while trying to communicate with the subgraph "
+                "Something went wrong while trying to fetching the data with the subgraph "
                 f"(Error: {res.status_code})!\n{res.text}"
             )
         body = res.json()
         self.context.logger.info(f"body: {body}")
         if "errors" in body.keys():
             raise ValueError(f"The given query is not correct")
-        #resData = yield from self.get_http_response(method="POST", url=subgraph_url, content=content, headers=headers)  
-        #self.context.logger.info(f"resData: {resData}")
         return body
     
 class RetriveFromIPFSBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ancestors
@@ -387,12 +387,11 @@ class MultiTxPreparationBehaviour(
                 contract_id=str(GnosisSafeContract.contract_id),
                 contract_callable="get_raw_safe_transaction_hash",
                 to_address=self.params.transfer_target_address,
-                value=0,#sum(tx["value"] for tx in multi_send_txs),
+                value=sum(tx["value"] for tx in multi_send_txs),
                 data=bytes.fromhex(multi_send_data),
                 operation=SafeOperation.DELEGATE_CALL.value,
                 safe_tx_gas=SAFE_GAS,
                 chain_id=GNOSIS_CHAIN_ID,
-                safe_nonce=0
             )
             self.context.logger.info(f"Multisend data preparation: {contract_api_msg}")
             if contract_api_msg.performative != ContractApiMessage.Performative.STATE:
@@ -453,7 +452,7 @@ class MultiTxPreparationBehaviour(
         return {
             "operation": MultiSendOperation.CALL,
             "to":self.params.transfer_target_address,
-            "value": ETHER_VALUE,
+            "value": 10,
             "data": tx_hash_data,
         }
 
@@ -484,7 +483,7 @@ class MultiTxPreparationBehaviour(
         return {
             "operation": MultiSendOperation.CALL,
             "to": self.params.transfer_contract_token_address,
-            "value": 0,
+            "value": 10,
             "data": tx_hash_data,
             "chain_id":GNOSIS_CHAIN_ID
         }

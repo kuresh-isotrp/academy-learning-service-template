@@ -177,7 +177,7 @@ class DecisionMakingBehaviour(
         """Get the next event"""
         # Using the token balance from the previous round, decide whether we should make a transfer or not
         # using some dummy decision making condition to go for TxPreparation/MultiTxPreparation
-        if self.synchronized_data.balance < 10:
+        if self.synchronized_data.balance < 100:
             event = Event.TRANSACT.value
             self.context.logger.info(f"Threshold not reached, moving to {event}")
         else:
@@ -263,7 +263,7 @@ class MultiTxPreparationBehaviour(
                 operation=SafeOperation.DELEGATE_CALL.value,
                 safe_tx_gas=SAFE_GAS,
                 chain_id=GNOSIS_CHAIN_ID,
-                safe_nonce=9
+                safe_nonce=0
             )
             self.context.logger.info(f"Multisend data preparation: {contract_api_msg}")
             if contract_api_msg.performative != ContractApiMessage.Performative.STATE:

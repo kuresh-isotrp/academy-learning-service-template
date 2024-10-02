@@ -187,4 +187,7 @@ models:
       coingecko_api_key: ${str:null}
       default_chain_id: ${str:gnosis}
       termination_from_block: ${int:34088325}
-      transfer_target_address: ${str:0x615d3278680337e2D39C3bc5042D959C7938B917}
+      transfer_target_address: ${str:0x0000000000000000000000000000000000000000}
+      multi_send_contract_token_address: ${str:0x0000000000000000000000000000000000000000}
+      transfer_contract_token_address: ${str:0x0000000000000000000000000000000000000000}
+      subgraph_url: ${str:https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU}

@@ -55,4 +55,18 @@ class Params(BaseParams):
         self.transfer_target_address = self._ensure(
             "transfer_target_address", kwargs, str
         )
+        self.transfer_contract_token_address = self._ensure(
+            "transfer_contract_token_address", kwargs, str
+        )
+        self.multi_send_contract_token_address = self._ensure(
+            "multi_send_contract_token_address", kwargs, str
+        )
+        self.subgraph_url = self._ensure(
+            "subgraph_url", kwargs, str
+        )
+        
+        self.ipfs_address = self._ensure(
+            "ipfs_address", kwargs, str
+        )
+        
         super().__init__(*args, **kwargs)

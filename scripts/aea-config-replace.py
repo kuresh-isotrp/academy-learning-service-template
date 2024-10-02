@@ -55,7 +55,27 @@ def main() -> None:
             config[-1]["models"]["params"]["args"]["setup"][
                 "safe_contract_address"
             ] = f"${{str:{os.getenv('SAFE_CONTRACT_ADDRESS')}}}"  # type: ignore
+        
+        if os.getenv("TRANSFER_CONTRACT_TOKEN_ADDRESS"):
+            config[-1]["models"]["params"]["args"][
+                "transfer_contract_token_address"
+            ] = f"${{str:{os.getenv('TRANSFER_CONTRACT_TOKEN_ADDRESS')}}}"  # type: ignore
+        
+        if os.getenv("TRANSFER_TARGET_ADDRESS"):
+            config[-1]["models"]["params"]["args"][
+                "transfer_target_address"
+            ] = f"${{str:{os.getenv('TRANSFER_TARGET_ADDRESS')}}}"  # type: ignore
 
+        if os.getenv("MULTI_SEND_CONTRACT_TOKEN_ADDRESS"):
+            config[-1]["models"]["params"]["args"][
+                "multi_send_contract_token_address"
+            ] = f"${{str:{os.getenv('MULTI_SEND_CONTRACT_TOKEN_ADDRESS')}}}"  # type: ignore
+
+        if os.getenv("SUBGRAPH_URL"):
+            config[-1]["models"]["params"]["args"][
+                "subgraph_url"
+            ] = f"${{str:{os.getenv('SUBGRAPH_URL')}}}"  # type: ignore
+                
     with open(Path("learning_agent", "aea-config.yaml"), "w", encoding="utf-8") as file:
         yaml.dump_all(config, file, sort_keys=False)
 

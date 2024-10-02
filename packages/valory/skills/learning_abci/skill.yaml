@@ -9,7 +9,7 @@ fingerprint:
   __init__.py: bafybeiho3lkochqpmes4f235chq26oggmwnol3vjuvhosleoubbjirbwaq
   behaviours.py: bafybeidxmn7xetzg6xkcfeih2zxvfhhv5z27bbeux52zjvoaj6bvajftui
   dialogues.py: bafybeifqjbumctlffx2xvpga2kcenezhe47qhksvgmaylyp5ypwqgfar5u
-  fsm_specification.yaml: bafybeicxvornc7gpvpotob6z46fl7qmataxydn22fr22qnb4ausfg6vppe
+  fsm_specification.yaml: bafybeib6k6hgdwsj6uhnm25xdutmqaj2oxe4f7kixfiheb76cyeryncbfi
   handlers.py: bafybeigjadr4thz6hfpfx5abezbwnqhbxmachf4efasrn4z2vqhsqgnyvi
   models.py: bafybeicdnvvduoioun5gweoz7dajloqub6nxiyg3oi63wyvbhccgzxj3oy
   payloads.py: bafybeicfc54bmgft2nlwpykcxaqvrbjrhcdkdck2xt2kyou6u6lczoorfu
@@ -126,6 +126,10 @@ models:
       coingecko_price_template: https://api.coingecko.com/api/v3/simple/price?ids=autonolas&vs_currencies=usd
       coingecko_api_key: null
       transfer_target_address: '0x0000000000000000000000000000000000000000'
+      multi_send_contract_token_address: '0x0000000000000000000000000000000000000000'
+      transfer_contract_token_address: '0x0000000000000000000000000000000000000000'
+      subgraph_url: https://gateway.thegraph.com/api/{api_key}/subgraphs/id/6oJrPk9YJEU9rWU4DAizjZdALSccxe5ZahBsTtFaGksU
+      ipfs_address: https://gateway.autonolas.tech/ipfs/
     class_name: Params
   requests:
     args: {}

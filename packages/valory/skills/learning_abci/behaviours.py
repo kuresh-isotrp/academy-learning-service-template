@@ -58,6 +58,7 @@ TX_DATA = b"0x"
 SAFE_GAS = 0
 VALUE_KEY = "value"
 TO_ADDRESS_KEY = "to_address"
+TX_VALUE=10
 
 
 class LearningBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
@@ -101,19 +102,8 @@ class APICheckBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ance
 
     def get_price(self):
         """Get token price from Coingecko"""
-        # Interact with Coingecko's API
-        headers = {
-            "accept": "application/json",
-            "x-cg-pro-api-key": self.params.coingecko_api_key
-        }
-        result = yield from self.get_http_response(method="GET",url=self.params.coingecko_price_template,headers=headers)
-        self.context.logger.info(f"result Price is {result}")
-        if result.status_code == 200:
-            data = json.loads(result.body.decode('utf-8'))
-            price = data['autonolas']['usd']
-        else:
-            print("Failed to retrieve data, status code:", result.status_code)
-            price = 0
+        yield
+        price = 1.0
         self.context.logger.info(f"Price is {price}")
         return price
 
@@ -171,7 +161,7 @@ class TxPreparationBehaviour(
             tx_hash = yield from self.get_tx_hash()
             payload_data = hash_payload_to_hex(
                 safe_tx_hash=tx_hash,
-                ether_value=ETHER_VALUE,  # we don't send any eth
+                ether_value=TX_VALUE,  # we don't send any eth
                 safe_tx_gas=SAFE_GAS,
                 to_address=self.params.transfer_target_address,
                 data=TX_DATA,
@@ -195,7 +185,7 @@ class TxPreparationBehaviour(
             contract_id=str(GnosisSafeContract.contract_id),
             contract_callable="get_raw_safe_transaction_hash",
             to_address=self.params.transfer_target_address,
-            value=0,
+            value=TX_VALUE,
             data=TX_DATA,
             safe_tx_gas=SAFE_GAS,
             chain_id= GNOSIS_CHAIN_ID,
@@ -225,5 +215,3 @@ class LearningRoundBehaviour(AbstractRoundBehaviour):
         DecisionMakingBehaviour,
         TxPreparationBehaviour,
     ]
-
-

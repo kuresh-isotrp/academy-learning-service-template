@@ -48,42 +48,26 @@ from packages.valory.skills.learning_abci.rounds import (
     TxPreparationRound,
     MultiTxPreparationRound,
 )
-from packages.valory.contracts.multisend.contract import (
-    MultiSendContract,
-    MultiSendOperation,
-)
-from packages.valory.protocols.contract_api import ContractApiMessage
-from hexbytes import HexBytes
-from packages.valory.contracts.erc20.contract import ERC20
+
 from packages.valory.contracts.gnosis_safe.contract import (
     GnosisSafeContract,
     SafeOperation,
 )
-from packages.valory.skills.transaction_settlement_abci.payload_tools import (
-    hash_payload_to_hex,
-)
-import requests
+from packages.valory.protocols.contract_api import ContractApiMessage
+from packages.valory.skills.transaction_settlement_abci.payload_tools import (hash_payload_to_hex,)
+
 import json
-from tempfile import mkdtemp
-import multibase
-import multicodec
-from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
-from aea.helpers.cid import to_v1
-from dataclasses import asdict, dataclass
-from pathlib import Path
 
 
 HTTP_OK = 200
+ETHER_VALUE = 10**18
 GNOSIS_CHAIN_ID = "gnosis"
 ETHER_VALUE = 10**18
 TX_DATA = b"0x"
 SAFE_GAS = 0
 VALUE_KEY = "value"
 TO_ADDRESS_KEY = "to_address"
-METADATA_FILENAME = "meatadata.json"
-V1_HEX_PREFIX = "f01"
-T_BALANCE = 100
-TX_VALUE = 10
+TX_VALUE=10
 
 
 class LearningBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
@@ -132,8 +116,6 @@ class APICheckBehaviour(LearningBaseBehaviour):  # pylint: disable=too-many-ance
 
     def get_price(self):
         """Get token price from Coingecko"""
-        # Interact with Coingecko's API
-        # result = yield from self.get_http_response("coingecko.com")
         yield
         price = 1.0
         self.context.logger.info(f"Price is {price}")
@@ -301,19 +283,8 @@ class DecisionMakingBehaviour(
 
     def get_event(self):
         """Get the next event"""
-        # Using the token balance from the previous round, decide whether we should make a transfer or not
-        # using some dummy decision making condition to go for TxPreparation/MultiTxPreparation
-        if self.synchronized_data.balance <= 0:
-            event = Event.TRANSACT.value
-            self.context.logger.info(f"Threshold not reached, moving to {event}")
-
-        elif self.synchronized_data.balance > 0 and self.synchronized_data.balance < T_BALANCE:
-            event = Event.TRANSACT.value
-            self.context.logger.info(f"Threshold not reached, moving to {event}")
-        else:
-            event = Event.MULTI_TRANSACT.value
-            self.context.logger.info(f"Threshold reached, moving to {event}")
-
+        # Using the token price from the previous round, decide whether we should make a transfer or not
+        event = Event.TRANSACT.value
         self.context.logger.info(f"Event is {event}")
         return event
 
@@ -330,8 +301,15 @@ class TxPreparationBehaviour(
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             tx_hash = yield from self.get_tx_hash()
+            payload_data = hash_payload_to_hex(
+                safe_tx_hash=tx_hash,
+                ether_value=TX_VALUE,  # we don't send any eth
+                safe_tx_gas=SAFE_GAS,
+                to_address=self.params.transfer_target_address,
+                data=TX_DATA,
+            )
             payload = TxPreparationPayload(
-                sender=sender, tx_submitter=None, tx_hash=tx_hash
+                sender=sender, tx_submitter=None, tx_hash=payload_data
             )
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
@@ -342,9 +320,29 @@ class TxPreparationBehaviour(
 
     def get_tx_hash(self):
         """Get the tx hash"""
-        # We need to prepare a 1 wei transfer from the safe to another (configurable) account.
-        yield
-        tx_hash = None
+        """Prepares and returns the safe tx hash for a multisend tx."""
+        response_msg = yield from self.get_contract_api_response(
+            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+            contract_address=self.synchronized_data.safe_contract_address,
+            contract_id=str(GnosisSafeContract.contract_id),
+            contract_callable="get_raw_safe_transaction_hash",
+            to_address=self.params.transfer_target_address,
+            value=TX_VALUE,
+            data=TX_DATA,
+            safe_tx_gas=SAFE_GAS,
+            chain_id= GNOSIS_CHAIN_ID,
+        )
+
+
+        if response_msg.performative != ContractApiMessage.Performative.STATE:
+            self.context.logger.error(
+                "Couldn't get safe tx hash. Expected response performative "  # type: ignore
+                f"{ContractApiMessage.Performative.STATE.value}, "  # type: ignore
+                f"received {response_msg.performative.value}: {response_msg}."
+            )
+            return False
+        self.context.logger.info(f"Response data is {response_msg}")
+        tx_hash = cast(str, response_msg.state.body["tx_hash"])[2:]
         self.context.logger.info(f"Transaction hash is {tx_hash}")
         return tx_hash
     
@@ -501,5 +499,4 @@ class LearningRoundBehaviour(AbstractRoundBehaviour):
         RetriveFromIPFSBehaviour,
         DecisionMakingBehaviour,
         TxPreparationBehaviour,
-        MultiTxPreparationBehaviour,
     ]
